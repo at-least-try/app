@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life Admin MVP - UI Prototype</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #171a21;
+      --line: #2b313c;
+      --text: #eff3f8;
+      --muted: #9ca8b8;
+      --red: #f04d5e;
+      --yellow: #f9c15c;
+      --green: #4ecb87;
+      --blue: #60a6ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: radial-gradient(circle at top right, #2a3241 0%, var(--bg) 40%);
+      color: var(--text);
+      padding: 24px;
+    }
+    .grid {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+    }
+    .screen {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, #1b2029, #141821);
+      padding: 14px;
+      min-height: 420px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.35);
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    h2 { margin: 0; font-size: 16px; letter-spacing: .2px; }
+    .sub { color: var(--muted); font-size: 12px; }
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      margin-top: 8px;
+      background: rgba(255,255,255,.01);
+    }
+    .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .badge { border-radius: 8px; font-size: 11px; padding: 3px 8px; font-weight: 600; }
+    .b-overdue { background: rgba(240,77,94,.2); color: #ffd8dd; }
+    .b-soon { background: rgba(249,193,92,.2); color: #ffe7ba; }
+    .b-upcoming { background: rgba(96,166,255,.2); color: #d8e8ff; }
+    .b-later { background: rgba(78,203,135,.2); color: #dbffe9; }
+    .list { margin: 0; padding-left: 18px; color: var(--muted); }
+    .btns { display: flex; gap: 8px; margin-top: 8px; }
+    button {
+      background: #232938;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    button.primary { background: rgba(240,77,94,.25); border-color: rgba(240,77,94,.6); }
+  </style>
+</head>
+<body>
+  <div class="grid">
+    <section class="screen">
+      <div class="header">
+        <h2>1) Onboarding</h2>
+        <span class="pill">Anonymous Start</span>
+      </div>
+      <p class="sub">Select life-admin domains:</p>
+      <div class="card">✅ Documents · ✅ Taxes · ✅ Subscriptions · ✅ Medical Bills · ✅ Relationships</div>
+      <p class="sub">Reminder style:</p>
+      <div class="card">Standard reminders + overdue escalation</div>
+      <div class="btns">
+        <button class="primary">Continue</button><button>Link Google Later</button>
+      </div>
+    </section>
+
+    <section class="screen">
+      <div class="header">
+        <h2>2) Dashboard</h2>
+        <span class="pill">Cycle Buckets</span>
+      </div>
+      <div class="card">
+        <div class="row"><strong>Tax Filing</strong><span class="badge b-overdue">OVERDUE</span></div>
+        <div class="sub">2 days late · Urgent</div>
+        <div class="btns"><button class="primary">Start Process</button><button>Snooze</button></div>
+      </div>
+      <div class="card">
+        <div class="row"><strong>Passport Renewal</strong><span class="badge b-soon">DUE SOON</span></div>
+        <div class="sub">12 days remaining · High</div>
+      </div>
+      <div class="card">
+        <div class="row"><strong>Car Registration</strong><span class="badge b-upcoming">UPCOMING</span></div>
+        <div class="sub">45 days remaining · Medium</div>
+      </div>
+    </section>
+
+    <section class="screen">
+      <div class="header">
+        <h2>3) Cycle Detail</h2>
+        <span class="pill">Passport</span>
+      </div>
+      <div class="card">
+        <strong>Timeline</strong>
+        <ul class="list">
+          <li>Gather photo + old passport</li>
+          <li>Fill DS-82 form</li>
+          <li>Submit by mail before due date</li>
+        </ul>
+      </div>
+      <div class="card">
+        <strong>Reminders</strong>
+        <ul class="list">
+          <li>30d, 14d, 7d, 1d</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="screen">
+      <div class="header">
+        <h2>4) Policy Rules</h2>
+        <span class="pill">Priority Sorted</span>
+      </div>
+      <div class="card">
+        <div class="row"><strong>Overdue escalation</strong><span class="badge b-overdue">P100</span></div>
+        <div class="sub">If cycle overdue → escalate in-app + push</div>
+      </div>
+      <div class="card">
+        <div class="row"><strong>7-day reminder</strong><span class="badge b-soon">P10</span></div>
+        <div class="sub">If due in 7 days → push notify</div>
+      </div>
+      <div class="btns"><button class="primary">Add Rule</button><button>Disable Rule</button></div>
+    </section>
+  </div>
+</body>
+</html>

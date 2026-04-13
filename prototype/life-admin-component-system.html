@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life Admin // Neo Dystopian UI System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050506;
+      --panel: #0f1014;
+      --panel-hi: #161924;
+      --line: #ffffff2e;
+      --white: #f7f8fa;
+      --muted: #99a3b2;
+      --red: #ff2a3d;
+      --red-glow: #ff2a3d66;
+      --cyan: #4fd8ff;
+      --ok: #4dffbe;
+      --warn: #ffc252;
+      --danger: #ff5d6c;
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--white);
+      font-family: Inter, system-ui, sans-serif;
+      background:
+        radial-gradient(1000px 600px at 100% -20%, #ff2a3d33 0%, transparent 40%),
+        radial-gradient(900px 500px at -20% 120%, #ff2a3d1c 0%, transparent 45%),
+        linear-gradient(180deg, #09090b, #030304);
+    }
+
+    .scanline::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(to bottom, transparent 0, transparent 2px, #ffffff07 3px);
+      opacity: .5;
+      mix-blend-mode: screen;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      border-right: 1px solid var(--line);
+      background: linear-gradient(180deg, #0e0f13, #08090c);
+      padding: 18px 14px;
+    }
+
+    .brand {
+      font-family: Orbitron, sans-serif;
+      letter-spacing: 1.2px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .brand span { color: var(--red); }
+
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      color: var(--muted);
+      display: inline-flex;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: .9px;
+    }
+
+    .nav a {
+      display: block;
+      color: #dae0ea;
+      text-decoration: none;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      font-size: 13px;
+      letter-spacing: .3px;
+    }
+
+    .nav a.active,
+    .nav a:hover {
+      border-color: #ff2a3d66;
+      background: #ff2a3d22;
+      box-shadow: 0 0 16px #ff2a3d25 inset;
+    }
+
+    .main {
+      padding: 18px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .title {
+      font-family: Orbitron, sans-serif;
+      font-size: 20px;
+      letter-spacing: .8px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      color: var(--white);
+      background: #171a24;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 12px;
+      letter-spacing: .4px;
+    }
+
+    .btn.primary {
+      border-color: #ff2a3d99;
+      background: #ff2a3d1f;
+      box-shadow: 0 0 18px #ff2a3d33;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: linear-gradient(170deg, #161924b8, #0d1017cc);
+      border-radius: var(--radius);
+      padding: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: 0 0 0 1px #ffffff0c inset;
+      pointer-events: none;
+    }
+
+    .panel h3 {
+      margin: 0 0 10px;
+      font-family: Orbitron, sans-serif;
+      font-size: 12px;
+      color: #ecf0f6;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .kpi {
+      font-family: Orbitron, sans-serif;
+      font-size: 30px;
+      margin-bottom: 4px;
+      text-shadow: 0 0 16px #fff2;
+    }
+
+    .muted { color: var(--muted); font-size: 12px; }
+
+    .span-3 { grid-column: span 3; }
+    .span-4 { grid-column: span 4; }
+    .span-5 { grid-column: span 5; }
+    .span-6 { grid-column: span 6; }
+    .span-7 { grid-column: span 7; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+
+    .list-item {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 9px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      background: #ffffff03;
+    }
+
+    .badge {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 11px;
+      padding: 3px 8px;
+      white-space: nowrap;
+    }
+
+    .b-overdue { border-color: #ff5d6c80; color: #ffd3d8; background: #ff5d6c1c; }
+    .b-soon { border-color: #ffc25280; color: #ffe6b6; background: #ffc2521a; }
+    .b-upcoming { border-color: #4fd8ff80; color: #d9f5ff; background: #4fd8ff1b; }
+    .b-ok { border-color: #4dffbe80; color: #d9ffef; background: #4dffbe1a; }
+
+    .graph {
+      width: 100%;
+      height: 170px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #0a0d14;
+      padding: 8px;
+    }
+
+    .field {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 9px;
+      font-size: 12px;
+      background: #10141d;
+      color: var(--white);
+      width: 100%;
+      margin-top: 6px;
+    }
+
+    .component-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+
+    .micro {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #10141d;
+    }
+
+    @media (max-width: 1050px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { border-right: none; border-bottom: 1px solid var(--line); }
+      .span-3,.span-4,.span-5,.span-6,.span-7,.span-8,.span-12 { grid-column: span 12; }
+    }
+  </style>
+</head>
+<body class="scanline">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">LIFE<span>//</span>ADMIN</div>
+      <div class="chip">Neo Dystopian Build</div>
+      <nav class="nav">
+        <a class="active" href="#">Dashboard</a>
+        <a href="#">Cycles</a>
+        <a href="#">Documents</a>
+        <a href="#">Subscriptions</a>
+        <a href="#">Medical Bills</a>
+        <a href="#">Policy Engine</a>
+        <a href="#">Relationships</a>
+        <a href="#">Settings</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <div class="title">MVP COMPONENT SYSTEM</div>
+          <div class="subtitle">All key UI blocks for the Life Admin app in one visual sheet.</div>
+        </div>
+        <div class="actions">
+          <button class="btn">Export Theme</button>
+          <button class="btn">Preview Flow</button>
+          <button class="btn primary">New Cycle</button>
+        </div>
+      </div>
+
+      <section class="grid">
+        <article class="panel span-3">
+          <h3>Overdue</h3>
+          <div class="kpi">04</div>
+          <div class="muted">Needs immediate action</div>
+        </article>
+
+        <article class="panel span-3">
+          <h3>Due Soon</h3>
+          <div class="kpi">11</div>
+          <div class="muted">Inside 30-day window</div>
+        </article>
+
+        <article class="panel span-3">
+          <h3>Triggered Rules</h3>
+          <div class="kpi">06</div>
+          <div class="muted">Escalations + reminders</div>
+        </article>
+
+        <article class="panel span-3">
+          <h3>Health Score</h3>
+          <div class="kpi">78%</div>
+          <div class="muted">Life admin confidence</div>
+        </article>
+
+        <article class="panel span-8">
+          <h3>Cycle Risk Trend</h3>
+          <svg class="graph" viewBox="0 0 680 170">
+            <g stroke="#ffffff24" stroke-width="1">
+              <line x1="0" y1="20" x2="680" y2="20"/><line x1="0" y1="55" x2="680" y2="55"/>
+              <line x1="0" y1="90" x2="680" y2="90"/><line x1="0" y1="125" x2="680" y2="125"/>
+              <line x1="0" y1="160" x2="680" y2="160"/>
+              <line x1="80" y1="0" x2="80" y2="170"/><line x1="160" y1="0" x2="160" y2="170"/>
+              <line x1="240" y1="0" x2="240" y2="170"/><line x1="320" y1="0" x2="320" y2="170"/>
+              <line x1="400" y1="0" x2="400" y2="170"/><line x1="480" y1="0" x2="480" y2="170"/>
+              <line x1="560" y1="0" x2="560" y2="170"/><line x1="640" y1="0" x2="640" y2="170"/>
+            </g>
+            <polyline fill="none" stroke="#fff" stroke-width="2.5" points="0,118 80,112 160,98 240,86 320,79 400,92 480,101 560,110 640,122 680,130"/>
+            <polyline fill="none" stroke="#ff2a3d" stroke-width="2.2" points="0,142 80,136 160,124 240,118 320,108 400,97 480,89 560,83 640,76 680,72"/>
+          </svg>
+          <div class="muted">White = completed on-time trend · Red = risk escalation trend</div>
+        </article>
+
+        <article class="panel span-4">
+          <h3>Action Queue</h3>
+          <div class="list-item"><span>Tax filing overdue</span><span class="badge b-overdue">P1</span></div>
+          <div class="list-item"><span>Passport renewal</span><span class="badge b-soon">P2</span></div>
+          <div class="list-item"><span>Insurance update</span><span class="badge b-upcoming">P3</span></div>
+          <div class="list-item"><span>Netflix renewal</span><span class="badge b-ok">AUTO</span></div>
+        </article>
+
+        <article class="panel span-6">
+          <h3>Create / Edit Cycle Component</h3>
+          <label class="muted">Cycle Title
+            <input class="field" value="Passport Renewal" />
+          </label>
+          <label class="muted">Cycle Type
+            <select class="field">
+              <option>Document</option><option>Tax</option><option>Subscription</option><option>Medical Bill</option>
+            </select>
+          </label>
+          <label class="muted">Next Due Date
+            <input class="field" type="date" value="2026-06-20" />
+          </label>
+          <div class="actions" style="margin-top:10px">
+            <button class="btn">Cancel</button>
+            <button class="btn primary">Save Cycle</button>
+          </div>
+        </article>
+
+        <article class="panel span-6">
+          <h3>Policy Rule Builder</h3>
+          <label class="muted">Trigger
+            <select class="field">
+              <option>Due in N days</option>
+              <option>Overdue</option>
+              <option>Status changed</option>
+            </select>
+          </label>
+          <label class="muted">Action
+            <select class="field">
+              <option>Push notify</option>
+              <option>Escalate in-app</option>
+              <option>Create integration task</option>
+            </select>
+          </label>
+          <label class="muted">Priority
+            <input class="field" type="number" value="100" />
+          </label>
+          <div class="actions" style="margin-top:10px">
+            <button class="btn">Disable</button>
+            <button class="btn primary">Publish Rule</button>
+          </div>
+        </article>
+
+        <article class="panel span-12">
+          <h3>Component Library</h3>
+          <div class="component-grid">
+            <div class="micro"><strong>Status Badge</strong><div class="muted">Overdue / Soon / Upcoming / Auto</div></div>
+            <div class="micro"><strong>KPI Card</strong><div class="muted">Count + context copy + trend icon</div></div>
+            <div class="micro"><strong>Action Row</strong><div class="muted">Quick actions + priority chips</div></div>
+            <div class="micro"><strong>Rule Card</strong><div class="muted">Trigger, action, enabled state</div></div>
+            <div class="micro"><strong>Timeline Block</strong><div class="muted">Process steps + due windows</div></div>
+            <div class="micro"><strong>Graph Panel</strong><div class="muted">White trend + red risk overlay</div></div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
