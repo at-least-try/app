@@ -1,0 +1,84 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function hasOnlyKeys(data, allowed) {
+      return data.keys().hasOnly(allowed);
+    }
+
+    function hasCycleRequiredFields(data) {
+      return data.keys().hasAll([
+        'title',
+        'type',
+        'status',
+        'criticality',
+        'nextDueDate',
+        'ownerUid',
+        'createdAt',
+        'updatedAt'
+      ]);
+    }
+
+    function validCycleType(value) {
+      return value in ['document', 'tax', 'subscription', 'medical_bill', 'relationship', 'custom'];
+    }
+
+    function validCycleStatus(value) {
+      return value in ['active', 'paused', 'completed'];
+    }
+
+    function validCriticality(value) {
+      return value in ['low', 'medium', 'high', 'urgent'];
+    }
+
+    function validCycleWrite(uid) {
+      let data = request.resource.data;
+      return hasOnlyKeys(data, [
+          'title',
+          'type',
+          'status',
+          'criticality',
+          'nextDueDate',
+          'recurrenceRule',
+          'leadTimesDays',
+          'ownerUid',
+          'notes',
+          'createdAt',
+          'updatedAt'
+        ])
+        && hasCycleRequiredFields(data)
+        && data.ownerUid == uid
+        && data.title is string
+        && validCycleType(data.type)
+        && validCycleStatus(data.status)
+        && validCriticality(data.criticality)
+        && data.nextDueDate is timestamp
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create, update: if isOwner(uid);
+      allow delete: if false;
+
+      match /cycles/{cycleId} {
+        allow read: if isOwner(uid);
+        allow create, update: if isOwner(uid) && validCycleWrite(uid);
+        allow delete: if isOwner(uid);
+      }
+
+      match /{subcollection}/{docId} {
+        allow read, write: if isOwner(uid);
+      }
+    }
+  }
+}
